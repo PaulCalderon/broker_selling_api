@@ -92,20 +92,25 @@ class TestORMOfHousing:
 
     # def test_ORM_should_be_able_to_retrieve_data(self):
     #     pass
+    #@pytest.mark.skip(reason="Test is not yet implemented")
+    def test_ORM_should_be_able_to_update_data(self):
 
-    # def test_ORM_should_be_able_to_update_data(self):
+        if os.path.exists(DBFILE):
+            os.remove(DBFILE)
+        houses_object = HouseList(location_city="Quezon City", developer = "Megaworld", price = 10000)
+        DatabaseCommands.insert(houses_object, DBFILE, engine)
 
-    #     if os.path.exists(DBFILE):
-    #         os.remove(DBFILE)
-    #     houses_object = HouseList(location_city="Quezon City", developer = "Megaworld", price = 10000)
-    #     DatabaseCommands.insert(houses_object)
-    #     houses_object = HouseList(id_of_house=1, price = 20000)
-    #     DatabaseCommands.update(houses_object)
-    #     data = DatabaseCommands.get(1)
-    #     assert data.price == 20000
+        houses_object = DatabaseCommands.get(HouseList, 1, engine)
+        houses_object.price = 7000
+        DatabaseCommands.update(HouseList, houses_object, engine, "price")
+        
+ 
 
-    #     if os.path.exists(DBFILE):
-    #         os.remove(DBFILE)
+        data = DatabaseCommands.get(HouseList, 1, engine,)
+        assert data.price == 7000
+        if os.path.exists(DBFILE):
+            os.remove(DBFILE)
+
 
 
 
