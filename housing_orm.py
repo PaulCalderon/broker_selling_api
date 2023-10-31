@@ -50,7 +50,7 @@ def table_initialize(database_name):
 class DatabaseCommands():
        
     @staticmethod
-    def insert(houses_object: HouseList, *dbname) -> None:
+    def insert(houses_object, *dbname) -> None:
         """dbname added for pytesting"""
         if dbname:
             database_name, engine = dbname
@@ -95,15 +95,21 @@ class DatabaseCommands():
 
 
     @staticmethod
-    def get(table_to_get_data_from, primary_id, *engine_object) -> HouseList:
+    def get(table_to_get_data_from, primary_id, engine_object = engine):
         """*arg is work around for pytest"""
         
-        for data in engine_object:
-            engine = data
 
-        with Session(engine) as session:
+        with Session(engine_object) as session:
             data = session.get(table_to_get_data_from, primary_id)
             return data
+        
+    @staticmethod
+    def create_loan_database_entry(house_object: SoldHouses, engine_object = engine):
+        with Session(engine_object) as session:
+            session.add(house_object)
+            session.commit()
+
+
 
 
 # if __name__ == "__main__":
