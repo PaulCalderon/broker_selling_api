@@ -11,8 +11,9 @@ from housing_orm import DatabaseCommands, HouseList, SoldHouses
 def setup_database():
     DBFILE = "testhouselist.db"
     engine = create_engine("sqlite+pysqlite:///" + DBFILE , echo=False, poolclass=NullPool)
-    houses_object = HouseList(location_city="Quezon City", developer = "Megaworld", price = 10000)
-    DatabaseCommands.insert(houses_object, DBFILE, engine)
+    if not os.path.exists(DBFILE):
+        houses_object = HouseList(location_city="Quezon City", developer = "Megaworld", price = 10000)
+        DatabaseCommands.insert(houses_object, DBFILE, engine)
     return DBFILE, engine
 
 
@@ -23,8 +24,9 @@ def setup_database():
 
 class TestAPIOfHousing:
 
-    def test_API_should_check_price_of_house_if_less_than_payment(self):
-        pass
+        
+
+
 
     def test_API_should_make_sure_new_price_is_not_zero_or_less(self, setup_database):
         
@@ -48,14 +50,10 @@ class TestAPIOfHousing:
 
 
 
-    def test_API_should_create_loan_database_entry_after_selling_house(self):
-        assert False
+  
 
     
-    def test_API_should_properly_update_sold_houses(self, setup_database):
-        HousingAPI.sell_house(1)
-        sell_status_of_house = False
-        assert sell_status_of_house
+
 
     def test_API_should_properly_update_reservered_houses(self, setup_database):
         DBFILE, engine = setup_database
@@ -67,7 +65,7 @@ class TestAPIOfHousing:
         HousingAPI.reserve_house(house_id, engine)
         data = DatabaseCommands.get(HouseList, house_id, engine)
         reserve_status_of_house = data.Reserved
-        assert reserve_status_of_house
+        assert reserve_status_of_house == 'True'
 
     def test_API_should_check_if_house_is_reserved_before_doing_reserve_action(self, setup_database):
         DBFILE, engine = setup_database
@@ -87,14 +85,66 @@ class TestAPIOfHousing:
         with pytest.raises(TypeError):
             HousingAPI.add_house("Manila City", "SMDC") #missing price column info
 
-    def test_API_should_be_able_to_retrive_house_price_from_database(self):
-        pass
+    def test_API_should_be_able_to_retrive_house_price_from_database(self, setup_database):
+        DBFILE, engine = setup_database
+        house_id = 1
+        price_of_house = HousingAPI.check_house_price(house_id, engine)
+        assert price_of_house == 1000
 
 
 
+    
+    def test_API_should_be_able_to_delete_specified_house_entry(self, setup_database):
+        DBFILE, engine = setup_database
+        house_id = 2
+        
+        HousingAPI.check_house_price(house_id, engine)
+    
+    def test_API_should_check_price_of_house_if_less_than_payment(self, setup_database):
+        DBFILE, engine = setup_database
+        house_id = 1
+        price = 2000 # price of house is only 1000.
+        with pytest.raises(ValueError, match="Payment is more than price of house"):
+            HousingAPI.sell_house(house_id, "cash", price_paid=price, engine_object=engine)
+
+    def test_API_should_properly_update_sold_houses(self, setup_database):
+        DBFILE, engine = setup_database
+        house_id=1
+        price_paid = 100 
+        financing_option = "cash"
+        broker_name = "Paul"
+        commission_percent = 10
+
+        HousingAPI.sell_house(house_id, financing_option, price_paid, broker_name, commission_percent, engine_object=engine)
+        data = DatabaseCommands.get(HouseList, house_id, engine)
+        sell_status_of_house = data.Sold
+        assert sell_status_of_house == 'True'
+
+    def test_API_should_check_and_return_error_if_house_already_sold(self, setup_database):
+        DBFILE, engine = setup_database
+        house_id=1
+        price = 0 
+        
+        with pytest.raises(ValueError, match="House already sold"):
+            HousingAPI.sell_house(house_id, price, engine_object=engine)
+
+
+        
+    
+    def test_API_should_create_sold_houses_database_entry_after_selling_house(self, setup_database):
+        """should be put after test of selling house"""
+        DBFILE, engine = setup_database
+        house_id = 1
+        transaction_id = 1
+        house_sold_data = DatabaseCommands.get(SoldHouses, transaction_id, engine)
+        assert house_sold_data.id_of_house == 1
+        assert house_sold_data.downpayment_amount == 100
 
 
 
+    def test_if_downpayment_is_less_than_price_loan_database_entry_must_be_created(self):
+        assert loan_data.house_id == 1
+        
 
     def test_API_should_check_if_payment_value_is_more_than_loan(self):
         pass
@@ -102,8 +152,8 @@ class TestAPIOfHousing:
         pass
     
 
-    # @pytest.mark.skip(reason="no way of currently testing this")
-    # def test_clean_up(self):
-    #     DBFILE = "testhouselist.db"
-    #     if os.path.exists(DBFILE):
-    #         os.remove(DBFILE)
+    @pytest.mark.skip(reason="no way of currently testing this")
+    def test_clean_up(self):
+        DBFILE = "testhouselist.db"
+        if os.path.exists(DBFILE):
+            os.remove(DBFILE)
