@@ -26,6 +26,7 @@ class HouseList(Base):
     Reserved: Mapped[Optional[str]]
     Sold: Mapped[Optional[str]] 
     Sold_Houses: Mapped[List["SoldHouses"]] = relationship(back_populates="House")
+    loan_record: Mapped[List["LoanAmount"]] = relationship(back_populates="house_record")
 
 
 class SoldHouses(Base):
@@ -37,6 +38,16 @@ class SoldHouses(Base):
     downpayment_amount : Mapped[Optional[int]]
     financing_option : Mapped[str]
     House: Mapped[List["HouseList"]] = relationship(back_populates="Sold_Houses")
+
+class LoanAmount(Base):
+    __tablename__ = "LoanTable"
+    loan_id : Mapped[int] = mapped_column(primary_key=True)
+    id_of_house = mapped_column(ForeignKey("Houses.id_of_house"))
+    original_loan : Mapped[int]
+    current_loan : Mapped[int]
+    house_record: Mapped[List["HouseList"]] = relationship(back_populates="loan_record")
+
+    
 
 # if not os.path.exists(DBFILE):
 #     database_commands.table_init()
@@ -104,7 +115,10 @@ class DatabaseCommands():
             return data
         
     @staticmethod
-    def create_loan_database_entry(house_object: SoldHouses, engine_object = engine):
+    def create_database_entry(house_object, engine_object = engine):
+        # if not os.path.exists(database_name):
+        #     Base.metadata.create_all(engine)
+
         with Session(engine_object) as session:
             session.add(house_object)
             session.commit()
@@ -112,8 +126,15 @@ class DatabaseCommands():
 
 
 
-# if __name__ == "__main__":
-#     houses_object = HouseList(location_city="Makati City", developer = "SMDC", price = 50000)
+#if __name__ == "__main__":
+    #engine = create_engine("sqlite+pysqlite:///" + DBFILE , echo=False, poolclass=NullPool)
+    # with Session(engine) as session:
+    #     data_object = LoanAmount(id_of_house = 1, original_loan = 1, current_loan = 1)
+    #     houses_object = HouseList(location_city="Makati City", developer = "SMDC", price = 50000)
+    #     DatabaseCommands.insert(houses_object)
+    #     DatabaseCommands.create_loan_database_entry(data_object)
+        #DatabaseCommands.create_loan_database_entry(houses_object, engine)
+    #houses_object = HouseList(location_city="Makati City", developer = "SMDC", price = 50000)
 #     with Session(engine) as session:
 #         houses_object = HouseList(location_city="Makati City", developer = "SMDC", price = 50000)
 #         houses_object1 = session.get(HouseList,1)
