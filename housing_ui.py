@@ -5,7 +5,7 @@
 
 
 def validate_input(user_command: int) -> bool:
-    
+    user_command = int(user_command)
     match user_command:
         case 1 | 2 | 3 | 4 | 5 | 6:
             return True
