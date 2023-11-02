@@ -1,0 +1,6 @@
+housingenv/
+.pytest_cache/
+*.pyc
+ormtesting.py
+test.py
+*.db
