@@ -28,6 +28,8 @@ class HousingAPI:
             raise ValueError('Price must be greater than 0')
 
         price_update_object = DatabaseCommands.get(HouseList, house_id, engine_object)
+        if price_update_object is None:
+            raise ValueError("House id doesn't exist")
         price_update_object.price = int(new_price)
         DatabaseCommands.update(HouseList, price_update_object, engine_object, "price")
 
@@ -40,6 +42,8 @@ class HousingAPI:
             engine_object = engine
 
         house_to_reserve = DatabaseCommands.get(HouseList, house_id, engine_object)
+        if house_to_reserve is None:
+            raise ValueError("House id doesn't exist")
         if house_to_reserve.Reserved is None:
             house_to_reserve.Reserved = "True"
             DatabaseCommands.update(HouseList, house_to_reserve, engine_object, "Reserved")
@@ -55,6 +59,8 @@ class HousingAPI:
             engine_object = engine
 
         house_data = DatabaseCommands.get(HouseList, house_id, engine_object)
+        if house_data is None:
+            raise ValueError("House id doesn't exist")
         return house_data.price
 
     @staticmethod
@@ -80,6 +86,8 @@ class HousingAPI:
             raise ValueError('House already sold')
         if int(price_paid) > int(house_data.price):
             raise ValueError("Payment is more than price of house")
+        if not (0 <= float(commission_percent_input) <= 100):
+            raise ValueError("Commission percent should be between 0 and 100")
 
         loan_amount = int(house_data.price) - int(price_paid)
         house_data.Sold = 'True'
