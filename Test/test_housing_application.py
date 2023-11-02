@@ -5,8 +5,6 @@ from housing_application import HousingAPI
 from housing_orm import DatabaseCommands, HouseList, SoldHouses, LoanAmount
 
 
-
-
 @pytest.fixture
 def setup_database():
     DBFILE = "testhouselist.db"
@@ -128,7 +126,7 @@ class TestAPIOfHousing:
     def test_API_should_check_and_return_error_if_house_already_sold(self, setup_database):
         DBFILE, engine = setup_database
         house_id=1
-        price = 0 
+        price = 0
 
         with pytest.raises(ValueError, match="House already sold"):
             HousingAPI.sell_house(house_id, price, engine_object=engine)
@@ -142,8 +140,6 @@ class TestAPIOfHousing:
         assert house_sold_data.id_of_house == 1
         assert house_sold_data.downpayment_amount == 100
 
-
-
     def test_if_downpayment_is_less_than_price_loan_database_entry_must_be_created(self, setup_database):
         DBFILE, engine_object = setup_database
         house_id = 1
@@ -152,12 +148,11 @@ class TestAPIOfHousing:
         assert loan_data.id_of_house == 1 #not done
         assert loan_data.original_loan == 900
 
-
     def test_API_should_not_be_able_to_call_sell_house_if_house_is_not_in_database(self, setup_database):
         DBFILE, engine = setup_database
         with pytest.raises(ValueError, match="No matching house id"):
             HousingAPI.sell_house(100,"cash", engine_object=engine)
-            
+
     #@pytest.mark.skip(reason="no way of currently testing this")
     def test_sell_house_should_raise_error_if_commission_percent_is_more_than_100_or_less_than_0(self, setup_database):
         DBFILE, engine_object = setup_database
@@ -165,16 +160,12 @@ class TestAPIOfHousing:
         financing_option = "cash"
         commission_percent_over_100 = 100.1
         negative_commission_percent = -0.1
-        
-        with pytest.raises(ValueError, match= "Commission percent should be between 0 and 100"):
 
+        with pytest.raises(ValueError, match= "Commission percent should be between 0 and 100"):
             HousingAPI.sell_house(house_id, financing_option, commission_percent_input=commission_percent_over_100, engine_object=engine_object)
-        
+
         with pytest.raises(ValueError, match= "Commission percent should be between 0 and 100"):
-
             HousingAPI.sell_house(house_id, financing_option, commission_percent_input=negative_commission_percent, engine_object=engine_object)
-
-
 
     def test_API_should_check_if_payment_value_is_more_than_loan(self):
         pass
