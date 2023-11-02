@@ -34,7 +34,7 @@ class SoldHouses(Base):
     transaction_id: Mapped[int] = mapped_column(primary_key=True)
     id_of_house = mapped_column(ForeignKey("Houses.id_of_house"))
     broker_name : Mapped[Optional[str]]
-    commission_percent : Mapped[Optional[int]]
+    commission_percent : Mapped[Optional[float]]
     downpayment_amount : Mapped[Optional[int]]
     financing_option : Mapped[str]
     House: Mapped[List["HouseList"]] = relationship(back_populates="Sold_Houses")
@@ -99,10 +99,15 @@ class DatabaseCommands():
         for data in engine_object:
             engine = data
         
+
+        
         with Session(engine) as session:
             data = session.get(table_to_get_data_from, primary_id)
-            session.delete(data)
-            session.commit()
+            if data is None:
+                raise ValueError("House id doesn't exist")
+            else:
+                session.delete(data)
+                session.commit()
 
 
     @staticmethod
