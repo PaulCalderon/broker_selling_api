@@ -52,12 +52,10 @@ def process_command(user_command): #can give feedback about command by getting d
             print("Selling House")
             house_id = int(input("Enter house id to sell: "))
             broker_name = input("Enter name of broker: ")
-            commission_percent = int(input("Enter commission percent: "))
-            downpayment_amount = int(input("Enter downpayment amount: "))
-            financing_option = input("Enter financing option")
+            commission_percent = float(input("Enter commission percent: "))
+            downpayment_amount = float(input("Enter downpayment amount: "))
+            financing_option = input("Enter financing option: ")
             HousingAPI.sell_house(house_id, financing_option, downpayment_amount, broker_name, commission_percent)
-
-            
 
 
 def help_command():
