@@ -9,7 +9,9 @@ It is recommented to install the packages in a virtual environment (venv)
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install the below packages.
 The program was developed under the following versions:
 >Python3 3.11.0
+
 >SQLAlchemy 2.0.22 Released: Oct 13, 2023
+
 >pytest 7.4.3 Released: Oct 25, 2023
 
 
@@ -20,11 +22,16 @@ pip install pytest
 Pull the latest version from the GitHub repository.
 
 There are three python files comprising the application with the tests in a subdirectory called 'tests'. 
+
+
  **housing_ui.py** contains the UI elements and is responsible for interacting with the user. It parses the commands from the user and prompts the user for more input as required.
+ 
 **housing_application.py** contains the business logic and interfaces between the UI and ORM. It contains the logic for processing the commands from the UI and also checks for invalid queries.
+
 **housing\_orm.py** contains the ORM code for interacting with the sqlite3 database. housing_orm.py assumes that the arguments being passed are valid and correct.
 
 [![](https://mermaid.ink/img/pako:eNp1kttqwzAMhl_F6Dp9gTAGY73ZxaCwu2Eoqq00ZrFlfGCMLu8-59AuzTLfONYvfb8idAHFmqAG1WGMe4PngFY6UU7LORp3PmYjHr53u8frG73vjMJk2N0nLoSp4qZwWDFLYE7ZY8ITRpIzbOxj4X2ZwsN5cYlCg4qi-DSpFTlS-FWflCKfojDO5zSF--naAi96XTgcAhd6pJkimsB2ZXPAUfcYImmh2Fp0OorEf3-23zIu6qbhjTR6_jvrrTno1QjvfK_zXZg-s0toXGkaT12BFNuRMVdDBZaCRaPLWoxlElJLliTU5VNj-JAg3ZCHOfHbl1NQp5CpguwLh-YtgrrBLpYoaZM4vM57NlwVeHTvzHYq7H8AtRXZmQ?type=png)](https://mermaid.live/edit#pako:eNp1kttqwzAMhl_F6Dp9gTAGY73ZxaCwu2Eoqq00ZrFlfGCMLu8-59AuzTLfONYvfb8idAHFmqAG1WGMe4PngFY6UU7LORp3PmYjHr53u8frG73vjMJk2N0nLoSp4qZwWDFLYE7ZY8ITRpIzbOxj4X2ZwsN5cYlCg4qi-DSpFTlS-FWflCKfojDO5zSF--naAi96XTgcAhd6pJkimsB2ZXPAUfcYImmh2Fp0OorEf3-23zIu6qbhjTR6_jvrrTno1QjvfK_zXZg-s0toXGkaT12BFNuRMVdDBZaCRaPLWoxlElJLliTU5VNj-JAg3ZCHOfHbl1NQp5CpguwLh-YtgrrBLpYoaZM4vM57NlwVeHTvzHYq7H8AtRXZmQ)
+
 HousingAPI commands can accept an engine object to change the name of the database
 
 ## Usage
