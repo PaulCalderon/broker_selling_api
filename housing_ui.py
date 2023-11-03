@@ -72,5 +72,3 @@ if __name__ == '__main__':
     user_command = int(input("Enter the # Command: "))
     validate_input(user_command)
     process_command(user_command)
-
-
